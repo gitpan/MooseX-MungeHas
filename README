@@ -1,0 +1,84 @@
+NAME
+    MooseX::MungeHas - munge your "has" (works with Moo, Moose and Mouse)
+
+SYNOPSIS
+       package Foo::Bar;
+   
+       use Moose;
+       use MooseX::MungeHas "is_ro";
+   
+       has foo => ();             # read-only
+       has bar => (is => "rw");   # read-write
+
+DESCRIPTION
+    MooseX::MungeHas alters the behaviour of the attributes of your Moo,
+    Moose or Mouse based class. It manages to support all three because it
+    doesn't attempt to do anything smart with metathingies; it simply
+    installs a wrapper for "has" that munges the attribute specification
+    hash before passing it on to the original "has" function.
+
+    When you "use MooseX::MungeHas" you must provide a list of mungers you
+    want it to apply. The following are currently pre-defined:
+
+    "is_ro", "is_rw", "is_rwp", "is_lazy"
+        These mungers supply defaults for the "is" option.
+
+        Although only Moo supports "is => "rwp"" and "is => "lazy"",
+        MooseX::MungeHas supplies an implementation of both for Moose or
+        Mouse.
+
+    "always_coerce"
+        Automatically provides "coerce => 1" if the type constraint provides
+        coercions.
+
+    "eq_1"
+        Makes "builder => 1", "clearer => 1", "predicate => 1", and "trigger
+        => 1" do what you mean.
+
+    "no_isa"
+        Switches off "isa" checks for attributes, unless they coerce.
+
+    "simple_isa"
+        Loosens type constraints if they don't coerce, and if it's likely to
+        make them significantly faster. (Loosening "Int" to "Num" won't
+        speed it up.)
+
+        Only works if you're using Type::Tiny constraints.
+
+    If these predefined mungers don't float your boat, then you can provide
+    additional mungers using coderefs:
+
+       use MooseX::MungeHas "no_isa", sub {
+          # Make constructor ignore private attributes
+          $_->{init_arg} = undef if $. =~ /^_/;
+       };
+
+    Within coderefs, the name of the attribute being processed is available
+    in the $. variable, and the specification hash is referenced via $_.
+
+    You may provide multiple coderefs. Mungers provided as coderefs are
+    executed *after* named ones, but are otherwise executed in the order
+    specified.
+
+BUGS
+    Please report any bugs to
+    <http://rt.cpan.org/Dist/Display.html?Queue=MooseX-MungeHas>.
+
+SEE ALSO
+    Moo, Mouse, Moose, MooseX::AttributeShortcuts, MooseX::InlineTypes,
+    Type::Tiny::Manual.
+
+AUTHOR
+    Toby Inkster <tobyink@cpan.org>.
+
+COPYRIGHT AND LICENCE
+    This software is copyright (c) 2013 by Toby Inkster.
+
+    This is free software; you can redistribute it and/or modify it under
+    the same terms as the Perl 5 programming language system itself.
+
+DISCLAIMER OF WARRANTIES
+    THIS PACKAGE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR IMPLIED
+    WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED WARRANTIES OF
+    MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+

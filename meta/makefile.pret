@@ -1,0 +1,11 @@
+# This file provides instructions for packaging.
+
+`MooseX-MungeHas`
+	perl_version_from m`MooseX::MungeHas`;
+	version_from      m`MooseX::MungeHas`;
+	readme_from       m`MooseX::MungeHas`;
+	requires          p`Eval::TypeTiny 0.004`;
+	test_requires     p`Test::More 0.96`;
+	test_requires     p`Test::Requires 0.06`;
+	.
+

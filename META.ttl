@@ -1,0 +1,56 @@
+@prefix cpan: <http://purl.org/NET/cpan-uri/person/> .
+@prefix cpant: <http://purl.org/NET/cpan-uri/terms#> .
+@prefix dbug: <http://ontologi.es/doap-bugs#> .
+@prefix dcs: <http://ontologi.es/doap-changeset#> .
+@prefix dist: <http://purl.org/NET/cpan-uri/dist/MooseX-MungeHas/> .
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+_:r1369692382r0 <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileName> "lib/MooseX/MungeHas.pm" ;
+	<http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#programmingLanguage> "Perl" ;
+	a <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#FileDataObject>, <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#SourceCode> ;
+	rdfs:label "MooseX::MungeHas" .
+_:r1369692382r1 <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileName> "lib/MooseX/MungeHas.pm" ;
+	<http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#programmingLanguage> "Perl" ;
+	a <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#FileDataObject>, <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#SourceCode> ;
+	rdfs:label "MooseX::MungeHas" .
+_:r1369692382r2 <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#fileName> "lib/MooseX/MungeHas.pm" ;
+	<http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#programmingLanguage> "Perl" ;
+	a <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#FileDataObject>, <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#SourceCode> ;
+	rdfs:label "MooseX::MungeHas" .
+_:rbAA260AE2C71911E29A2C63135BF283EDr0 doap:browse <https://github.com/tobyink/p5-moosex-mungehas> ;
+	a doap:GitRepository .
+<http://dev.perl.org/licenses/> <http://purl.org/dc/terms/title> "the same terms as the perl 5 programming language system itself" .
+dist:project cpant:perl_version_from _:r1369692382r0 ;
+	cpant:readme_from _:r1369692382r2 ;
+	cpant:requires "Eval::TypeTiny 0.004"^^cpant:dsWithVersion ;
+	cpant:test_requires "Test::More 0.96"^^cpant:dsWithVersion, "Test::Requires 0.06"^^cpant:dsWithVersion ;
+	cpant:version_from _:r1369692382r1 ;
+	<http://purl.org/dc/terms/contributor> cpan:tobyink ;
+	doap:bug-database <http://rt.cpan.org/Dist/Display.html?Queue=MooseX-MungeHas> ;
+	doap:created "2013-05-27"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	doap:developer cpan:tobyink ;
+	doap:download-page <https://metacpan.org/release/MooseX-MungeHas> ;
+	doap:homepage <https://metacpan.org/release/MooseX-MungeHas> ;
+	doap:license <http://dev.perl.org/licenses/> ;
+	doap:maintainer cpan:tobyink ;
+	doap:name "MooseX-MungeHas" ;
+	doap:programming-language "Perl" ;
+	doap:release dist:v_0-000_01 ;
+	doap:repository _:rbAA260AE2C71911E29A2C63135BF283EDr0 ;
+	doap:shortdesc "munge your \"has\" (works with Moo, Moose and Mouse)" ;
+	a doap:Project .
+dist:v_0-000_01 dcs:released-by cpan:tobyink ;
+	<http://purl.org/dc/terms/identifier> "MooseX-MungeHas-0.000_01"^^<http://www.w3.org/2001/XMLSchema#string> ;
+	<http://purl.org/dc/terms/issued> "2013-05-27"^^<http://www.w3.org/2001/XMLSchema#date> ;
+	doap:file-release <http://backpan.cpan.org/authors/id/T/TO/TOBYINK/MooseX-MungeHas-0.000_01.tar.gz> ;
+	doap:revision "0.000_01"^^<http://www.w3.org/2001/XMLSchema#string> ;
+	a cpant:DeveloperRelease, doap:Version ;
+	rdfs:label "Preview release" .
+cpan:tobyink a foaf:Person ;
+	foaf:mbox <mailto:tobyink@cpan.org> ;
+	foaf:name "Toby Inkster" ;
+	foaf:nick "TOBYINK" ;
+	foaf:page <https://metacpan.org/author/TOBYINK> .
