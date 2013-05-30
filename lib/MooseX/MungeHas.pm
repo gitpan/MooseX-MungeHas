@@ -6,7 +6,7 @@ use warnings;
 
 BEGIN {
 	$MooseX::MungeHas::AUTHORITY = 'cpan:TOBYINK';
-	$MooseX::MungeHas::VERSION   = '0.000_01';
+	$MooseX::MungeHas::VERSION   = '0.000_02';
 }
 
 use Carp qw(croak);
@@ -48,7 +48,6 @@ sub _make_munger
 	my ($caller, @features) = @_;
 	
 	@features or croak "Munge 'has' how exactly?? Expected list";
-	return $features[0] if @features == 1 && ref($features[0]);
 	
 	return $class->_compile_munger_code($caller, @features);
 }
@@ -107,6 +106,18 @@ sub _compile_munger_code
 	{
 		push @code, '  if (exists($_->{isa}) and !exists($_->{coerce}) and Scalar::Util::blessed($_->{isa}) and $_->{isa}->can("has_coercion") and $_->{isa}->has_coercion) {';
 		push @code, '    $_->{coerce} = $_->{isa}->coercion;';
+		push @code, '  }';
+	}
+	
+	if (_detect_oo($caller) eq "Moo")
+	{
+		push @code, '  if (defined($_->{coerce}) and $_->{coerce} eq "1") {';
+		push @code, '    Scalar::Util::blessed($_->{isa}) && $_->{isa}->isa("Type::Tiny")';
+		push @code, '      or Carp::croak("coerce => 1, but not isa => Type::Tiny");';
+		push @code, '    $_->{coerce} = $_->{isa}->coercion;';
+		push @code, '  }';
+		push @code, '  elsif (exists($_->{coerce}) and not $_->{coerce}) {';
+		push @code, '    delete($_->{coerce});';
 		push @code, '  }';
 	}
 	
@@ -265,7 +276,10 @@ L<Mouse>.
 =item C<< always_coerce >>
 
 Automatically provides C<< coerce => 1 >> if the type constraint provides
-coercions.
+coercions. (Unless you've explicitly specified C<< coerce => 0 >>.)
+
+Although L<Moo> expects coerce to be a coderef, MooseX::MungeHas supplies
+an implementation of C<< coerce => 0|1 >> for L<Type::Tiny> type constraints.
 
 =item C<< eq_1 >>
 

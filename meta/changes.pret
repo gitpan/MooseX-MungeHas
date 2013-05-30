@@ -4,3 +4,12 @@
 	issued  2013-05-27;
 	label   "Preview release".
 
+`MooseX-MungeHas 0.000_02 cpan:TOBYINK`
+	issued  2013-05-31;
+	changeset [
+		item "Depend on newer version of Eval::TypeTiny."^^Packaging;
+		item "Make coerce => 0|1 work in Moo."^^Addition;
+		item "Drop the idea of shortcutting import with a single coderef; it doesn't work out so well."^^Removal;
+		item "Much improved test suite."^^Packaging;
+	].
+

@@ -4,11 +4,11 @@
 
 =head1 PURPOSE
 
-Test that MooseX::MungeHas features work with Moose.
+Test that MooseX::MungeHas features work with Mouse.
 
 =head1 DEPENDENCIES
 
-Test requires Moose 2.0000 or is skipped.
+Test requires Mouse 1.00 or is skipped.
 
 =head1 AUTHOR
 
@@ -25,7 +25,7 @@ the same terms as the Perl 5 programming language system itself.
 
 use strict;
 use warnings;
-use Test::Requires { "Moose" => "2.0000" };
+use Test::Requires { "Mouse" => "1.00" };
 use Test::More;
 
 use Types::Standard -types;
@@ -37,7 +37,7 @@ my $Even = Int->create_child_type(
 
 {
 	package Local::Class1;
-	use Moose;
+	use Mouse;
 	use MooseX::MungeHas qw( is_ro simple_isa always_coerce );
 	has attr1 => (isa => $Even, coerce => 1);
 	has attr2 => (isa => $Even, coerce => 0); # this should be simplified to Int
@@ -69,7 +69,7 @@ can_ok("Local::Class1", "_set_attr3");
 
 my $o = Local::Class1->new;
 ok(
-	!$o->meta->get_meta_instance->is_slot_initialized($o, "attr4"),
+	!exists $o->{attr4},
 	'$o->attr4 is not initialized',
 );
 is(
@@ -78,7 +78,7 @@ is(
 	'default worked',
 );
 ok(
-	$o->meta->get_meta_instance->is_slot_initialized($o, "attr4"),
+	exists $o->{attr4},
 	'$o->attr4 is now initialized',
 );
 

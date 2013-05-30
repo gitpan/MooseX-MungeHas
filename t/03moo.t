@@ -4,11 +4,11 @@
 
 =head1 PURPOSE
 
-Test that MooseX::MungeHas features work with Moose.
+Test that MooseX::MungeHas features work with Moo.
 
 =head1 DEPENDENCIES
 
-Test requires Moose 2.0000 or is skipped.
+Test requires Moo 1.000000 or is skipped.
 
 =head1 AUTHOR
 
@@ -25,8 +25,9 @@ the same terms as the Perl 5 programming language system itself.
 
 use strict;
 use warnings;
-use Test::Requires { "Moose" => "2.0000" };
+use Test::Requires { "Moo" => "1.000000" };
 use Test::More;
+use Test::Fatal;
 
 use Types::Standard -types;
 
@@ -37,7 +38,7 @@ my $Even = Int->create_child_type(
 
 {
 	package Local::Class1;
-	use Moose;
+	use Moo;
 	use MooseX::MungeHas qw( is_ro simple_isa always_coerce );
 	has attr1 => (isa => $Even, coerce => 1);
 	has attr2 => (isa => $Even, coerce => 0); # this should be simplified to Int
@@ -45,31 +46,21 @@ my $Even = Int->create_child_type(
 	has attr4 => (isa => $Even, is => "lazy", default => sub { 42 });
 }
 
-ok(
-	Local::Class1->meta->get_attribute("attr$_")->should_coerce,
-	qq[Local::Class1->meta->get_attribute("attr$_")->should_coerce],
+is(
+	Local::Class1->new("attr$_" => 333)->${\"attr$_"}, 666,
+	qq[Local::Class1 attribute attr$_ coerces],
 ) for 1, 3, 4;
 
-ok(
-	!Local::Class1->meta->get_attribute("attr2")->should_coerce,
-	q[not Local::Class1->meta->get_attribute("attr2")->should_coerce],
+is(
+	Local::Class1->new("attr2" => 333)->attr2, 333,
+	q[attr2 accepts an odd Int because its type check has been simplified],
 );
-
-ok(
-	Local::Class1->meta->get_attribute("attr$_")->type_constraint == $Even,
-	qq[Local::Class1->meta->get_attribute("attr$_")->type_constraint == \$Even],
-) || diag(Local::Class1->meta->get_attribute("attr1")->type_constraint) for 1, 3, 4;
-
-ok(
-	Local::Class1->meta->get_attribute("attr2")->type_constraint == Int,
-	q[Local::Class1->meta->get_attribute("attr2")->type_constraint == Int],
-) or diag(Local::Class1->meta->get_attribute("attr2")->type_constraint);
 
 can_ok("Local::Class1", "_set_attr3");
 
 my $o = Local::Class1->new;
 ok(
-	!$o->meta->get_meta_instance->is_slot_initialized($o, "attr4"),
+	!exists $o->{attr4},
 	'$o->attr4 is not initialized',
 );
 is(
@@ -78,7 +69,7 @@ is(
 	'default worked',
 );
 ok(
-	$o->meta->get_meta_instance->is_slot_initialized($o, "attr4"),
+	exists $o->{attr4},
 	'$o->attr4 is now initialized',
 );
 

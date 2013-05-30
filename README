@@ -29,7 +29,11 @@ DESCRIPTION
 
     "always_coerce"
         Automatically provides "coerce => 1" if the type constraint provides
-        coercions.
+        coercions. (Unless you've explicitly specified "coerce => 0".)
+
+        Although Moo expects coerce to be a coderef, MooseX::MungeHas
+        supplies an implementation of "coerce => 0|1" for Type::Tiny type
+        constraints.
 
     "eq_1"
         Makes "builder => 1", "clearer => 1", "predicate => 1", and "trigger

@@ -32,4 +32,6 @@ meta/people.pret
 README
 t/01basic.t
 t/02moose.t
+t/03moo.t
+t/04mouse.t
 SIGNATURE                                Public-key signature (added by MakeMaker)
