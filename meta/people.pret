@@ -6,3 +6,7 @@ cpan:TOBYINK
 	:name  "Toby Inkster";
 	:mbox  <mailto:tobyink@cpan.org>.
 
+<urn:uuid:5af8f9d0-2381-4f00-95e4-5af701aa8da8>
+	a      :Person;
+	:name  "Luc J. Bourhis";
+	:page  <https://github.com/luc-j-bourhis>.

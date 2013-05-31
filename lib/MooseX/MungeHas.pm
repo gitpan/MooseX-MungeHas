@@ -6,7 +6,7 @@ use warnings;
 
 BEGIN {
 	$MooseX::MungeHas::AUTHORITY = 'cpan:TOBYINK';
-	$MooseX::MungeHas::VERSION   = '0.000_03';
+	$MooseX::MungeHas::VERSION   = '0.000_04';
 }
 
 use Carp qw(croak);
@@ -222,7 +222,7 @@ sub _make_has_mouse
 			local $_ = \%spec;
 			local $. = $attr;
 			$coderef->($attr, %spec);
-			local @_ = ($attr, %$_);
+			@_ = ($attr, %$_);
 			goto $orig;
 		}
 	};

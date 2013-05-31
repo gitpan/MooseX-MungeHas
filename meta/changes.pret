@@ -19,3 +19,13 @@
 		item "Fix weird overloading-related bug in Perl < 5.17."^^Bugfix;
 	].
 
+`MooseX-MungeHas 0.000_04 cpan:TOBYINK`
+	issued  2013-05-31;
+	changeset [
+		item [
+			a dcs:Bugfix;
+			label "local @_ doesn't work with goto in Perl < 5.18. (Only affects Mouse.)";
+			dcs:thanks <urn:uuid:5af8f9d0-2381-4f00-95e4-5af701aa8da8>;
+		];
+	].
+
