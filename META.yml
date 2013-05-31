@@ -36,4 +36,4 @@ resources:
   homepage: https://metacpan.org/release/MooseX-MungeHas
   license: http://dev.perl.org/licenses/
   repository: https://github.com/tobyink/p5-moosex-mungehas
-version: 0.000_02
+version: 0.000_03

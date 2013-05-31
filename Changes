@@ -6,6 +6,10 @@ Home page:    <https://metacpan.org/release/MooseX-MungeHas>
 Bug tracker:  <http://rt.cpan.org/Dist/Display.html?Queue=MooseX-MungeHas>
 Maintainer:   Toby Inkster <mailto:tobyink@cpan.org>
 
+0.000_03  2013-05-31
+
+ - (Bugfix) Fix weird overloading-related bug in Perl < 5.17.
+
 0.000_02  2013-05-31
 
  - (Addition) Make coerce => 0|1 work in Moo.

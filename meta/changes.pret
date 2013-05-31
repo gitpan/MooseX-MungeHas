@@ -13,3 +13,9 @@
 		item "Much improved test suite."^^Packaging;
 	].
 
+`MooseX-MungeHas 0.000_03 cpan:TOBYINK`
+	issued  2013-05-31;
+	changeset [
+		item "Fix weird overloading-related bug in Perl < 5.17."^^Bugfix;
+	].
+

@@ -6,7 +6,7 @@ use warnings;
 
 BEGIN {
 	$MooseX::MungeHas::AUTHORITY = 'cpan:TOBYINK';
-	$MooseX::MungeHas::VERSION   = '0.000_02';
+	$MooseX::MungeHas::VERSION   = '0.000_03';
 }
 
 use Carp qw(croak);
@@ -111,7 +111,7 @@ sub _compile_munger_code
 	
 	if (_detect_oo($caller) eq "Moo")
 	{
-		push @code, '  if (defined($_->{coerce}) and $_->{coerce} eq "1") {';
+		push @code, '  if (defined($_->{coerce}) and !ref($_->{coerce}) and $_->{coerce} eq "1") {';
 		push @code, '    Scalar::Util::blessed($_->{isa}) && $_->{isa}->isa("Type::Tiny")';
 		push @code, '      or Carp::croak("coerce => 1, but not isa => Type::Tiny");';
 		push @code, '    $_->{coerce} = $_->{isa}->coercion;';
