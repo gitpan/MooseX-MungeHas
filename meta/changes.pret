@@ -29,3 +29,12 @@
 		];
 	].
 
+`MooseX-MungeHas 0.001 cpan:TOBYINK`
+	issued  2013-06-12;
+	changeset [
+		item [
+			a dcs:Addition, dcs:Documentation;
+			label "examples/relax-type-constraints.pl";
+		];
+	].
+

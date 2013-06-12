@@ -6,7 +6,7 @@ use warnings;
 
 BEGIN {
 	$MooseX::MungeHas::AUTHORITY = 'cpan:TOBYINK';
-	$MooseX::MungeHas::VERSION   = '0.000_04';
+	$MooseX::MungeHas::VERSION   = '0.001';
 }
 
 use Carp qw(croak);
@@ -325,6 +325,9 @@ L<http://rt.cpan.org/Dist/Display.html?Queue=MooseX-MungeHas>.
 
 L<Moo>, L<Mouse>, L<Moose>, L<MooseX::AttributeShortcuts>,
 L<MooseX::InlineTypes>, L<Type::Tiny::Manual>.
+
+Similar: L<MooseX::HasDefaults>, L<MooseX::Attributes::Curried>,
+L<MooseX::Attribute::Prototype> and L<MooseX::AttributeDefaults>.
 
 =head1 AUTHOR
 

@@ -72,6 +72,9 @@ SEE ALSO
     Moo, Mouse, Moose, MooseX::AttributeShortcuts, MooseX::InlineTypes,
     Type::Tiny::Manual.
 
+    Similar: MooseX::HasDefaults, MooseX::Attributes::Curried,
+    MooseX::Attribute::Prototype and MooseX::AttributeDefaults.
+
 AUTHOR
     Toby Inkster <tobyink@cpan.org>.
 

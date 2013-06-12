@@ -2,6 +2,7 @@ Changes
 CONTRIBUTING
 COPYRIGHT
 CREDITS
+examples/relax-type-constraints.pl
 inc/Module/AutoInstall.pm
 inc/Module/Install.pm
 inc/Module/Install/AutoInstall.pm
