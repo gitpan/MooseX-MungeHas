@@ -4,23 +4,27 @@ MooseX-MungeHas
 Created:      2013-05-27
 Home page:    <https://metacpan.org/release/MooseX-MungeHas>
 Bug tracker:  <http://rt.cpan.org/Dist/Display.html?Queue=MooseX-MungeHas>
-Maintainer:   Toby Inkster <mailto:tobyink@cpan.org>
+Maintainer:   Toby Inkster (TOBYINK) <tobyink@cpan.org>
 
-0.001  2013-06-12
+0.002	2013-08-20
+
+ - (Bugfix) Fix syntax error compiling the eq_1 munger.
+
+0.001	2013-06-12
 
  - (Addition Documentation) examples/relax-type-constraints.pl
 
-0.000_04  2013-05-31
+0.000_04	2013-05-31
 
  - (Bugfix) local @_ doesn't work with goto in Perl < 5.18. (Only affects
    Mouse.)
-   ++"Luc J. Bourhis"
+   Luc J. Bourhis++
 
-0.000_03  2013-05-31
+0.000_03	2013-05-31
 
  - (Bugfix) Fix weird overloading-related bug in Perl < 5.17.
 
-0.000_02  2013-05-31
+0.000_02	2013-05-31
 
  - (Addition) Make coerce => 0|1 work in Moo.
  - (Packaging) Depend on newer version of Eval::TypeTiny.
@@ -28,6 +32,5 @@ Maintainer:   Toby Inkster <mailto:tobyink@cpan.org>
  - (Removal) Drop the idea of shortcutting import with a single coderef; it
    doesn't work out so well.
 
-0.000_01  2013-05-27  # Preview release
-
+0.000_01	2013-05-27	Preview release
 

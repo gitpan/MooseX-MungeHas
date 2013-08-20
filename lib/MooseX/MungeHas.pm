@@ -6,7 +6,7 @@ use warnings;
 
 BEGIN {
 	$MooseX::MungeHas::AUTHORITY = 'cpan:TOBYINK';
-	$MooseX::MungeHas::VERSION   = '0.001';
+	$MooseX::MungeHas::VERSION   = '0.002';
 }
 
 use Carp qw(croak);
@@ -92,7 +92,7 @@ sub _compile_munger_code
 	
 	if (delete $features{"eq_1"})
 	{
-		push @code, '  my ($pfx, $name) = ($. =~ /^(_*)(.+)$/)';
+		push @code, '  my ($pfx, $name) = ($. =~ /^(_*)(.+)$/);';
 		push @code, '  $_->{builder}   = "_build_$." if exists($_->{builder}) && $_->{builder} eq q(1);';
 		push @code, '  $_->{clearer}   = "${pfx}clear_${name}" if exists($_->{clearer}) && $_->{clearer} eq q(1);';
 		push @code, '  $_->{predicate} = "${pfx}has_${name}" if exists($_->{predicate}) && $_->{predicate} eq q(1);';

@@ -11,41 +11,40 @@ SYNOPSIS
        has bar => (is => "rw");   # read-write
 
 DESCRIPTION
-    MooseX::MungeHas alters the behaviour of the attributes of your Moo,
-    Moose or Mouse based class. It manages to support all three because it
-    doesn't attempt to do anything smart with metathingies; it simply
-    installs a wrapper for "has" that munges the attribute specification
-    hash before passing it on to the original "has" function.
+    MooseX::MungeHas alters the behaviour of the attributes of your Moo, Moose
+    or Mouse based class. It manages to support all three because it doesn't
+    attempt to do anything smart with metathingies; it simply installs a
+    wrapper for `has` that munges the attribute specification hash before
+    passing it on to the original `has` function.
 
-    When you "use MooseX::MungeHas" you must provide a list of mungers you
+    When you `use MooseX::MungeHas` you must provide a list of mungers you
     want it to apply. The following are currently pre-defined:
 
-    "is_ro", "is_rw", "is_rwp", "is_lazy"
-        These mungers supply defaults for the "is" option.
+    `is_ro`, `is_rw`, `is_rwp`, `is_lazy`
+        These mungers supply defaults for the `is` option.
 
-        Although only Moo supports "is => "rwp"" and "is => "lazy"",
+        Although only Moo supports `is => "rwp"` and `is => "lazy"`,
         MooseX::MungeHas supplies an implementation of both for Moose or
         Mouse.
 
-    "always_coerce"
-        Automatically provides "coerce => 1" if the type constraint provides
-        coercions. (Unless you've explicitly specified "coerce => 0".)
+    `always_coerce`
+        Automatically provides `coerce => 1` if the type constraint provides
+        coercions. (Unless you've explicitly specified `coerce => 0`.)
 
-        Although Moo expects coerce to be a coderef, MooseX::MungeHas
-        supplies an implementation of "coerce => 0|1" for Type::Tiny type
-        constraints.
+        Although Moo expects coerce to be a coderef, MooseX::MungeHas supplies
+        an implementation of `coerce => 0|1` for Type::Tiny type constraints.
 
-    "eq_1"
-        Makes "builder => 1", "clearer => 1", "predicate => 1", and "trigger
-        => 1" do what you mean.
+    `eq_1`
+        Makes `builder => 1`, `clearer => 1`, `predicate => 1`, and `trigger
+        => 1` do what you mean.
 
-    "no_isa"
-        Switches off "isa" checks for attributes, unless they coerce.
+    `no_isa`
+        Switches off `isa` checks for attributes, unless they coerce.
 
-    "simple_isa"
+    `simple_isa`
         Loosens type constraints if they don't coerce, and if it's likely to
-        make them significantly faster. (Loosening "Int" to "Num" won't
-        speed it up.)
+        make them significantly faster. (Loosening `Int` to `Num` won't speed
+        it up.)
 
         Only works if you're using Type::Tiny constraints.
 
@@ -57,8 +56,8 @@ DESCRIPTION
           $_->{init_arg} = undef if $. =~ /^_/;
        };
 
-    Within coderefs, the name of the attribute being processed is available
-    in the $. variable, and the specification hash is referenced via $_.
+    Within coderefs, the name of the attribute being processed is available in
+    the $. variable, and the specification hash is referenced via $_.
 
     You may provide multiple coderefs. Mungers provided as coderefs are
     executed *after* named ones, but are otherwise executed in the order
@@ -81,8 +80,8 @@ AUTHOR
 COPYRIGHT AND LICENCE
     This software is copyright (c) 2013 by Toby Inkster.
 
-    This is free software; you can redistribute it and/or modify it under
-    the same terms as the Perl 5 programming language system itself.
+    This is free software; you can redistribute it and/or modify it under the
+    same terms as the Perl 5 programming language system itself.
 
 DISCLAIMER OF WARRANTIES
     THIS PACKAGE IS PROVIDED "AS IS" AND WITHOUT ANY EXPRESS OR IMPLIED
