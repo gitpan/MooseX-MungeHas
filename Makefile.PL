@@ -7,7 +7,7 @@ my $meta = {
   "abstract"           => "munge your \"has\" (works with Moo, Moose and Mouse)",
   "author"             => ["Toby Inkster (TOBYINK) <tobyink\@cpan.org>"],
   "dynamic_config"     => 0,
-  "generated_by"       => "Dist::Inkt::Profile::TOBYINK version 0.006, CPAN::Meta::Converter version 2.120921",
+  "generated_by"       => "Dist::Inkt::Profile::TOBYINK version 0.007, CPAN::Meta::Converter version 2.120921",
   "keywords"           => [],
   "license"            => ["perl_5"],
   "meta-spec"          => {
@@ -40,7 +40,7 @@ my $meta = {
                                          },
                           },
   "provides"           => {
-                            "MooseX::MungeHas" => { file => "lib/MooseX/MungeHas.pm", version => 0.002 },
+                            "MooseX::MungeHas" => { file => "lib/MooseX/MungeHas.pm", version => 0.003 },
                           },
   "release_status"     => "stable",
   "resources"          => {
@@ -55,7 +55,7 @@ my $meta = {
                                             },
                             X_identifier => "http://purl.org/NET/cpan-uri/dist/MooseX-MungeHas/project",
                           },
-  "version"            => 0.002,
+  "version"            => 0.003,
   "x_provides_scripts" => {},
 };
 

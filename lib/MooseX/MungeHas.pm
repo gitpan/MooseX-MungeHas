@@ -6,7 +6,7 @@ use warnings;
 
 BEGIN {
 	$MooseX::MungeHas::AUTHORITY = 'cpan:TOBYINK';
-	$MooseX::MungeHas::VERSION   = '0.002';
+	$MooseX::MungeHas::VERSION   = '0.003';
 }
 
 use Carp qw(croak);
@@ -63,8 +63,8 @@ sub _compile_munger_code
 	
 	if (_detect_oo($caller) =~ /^Mo[ou]se$/)
 	{
-		push @code, '  if (exists($_->{isa}) && !ref($_->{isa})) {';
-		push @code, '    $_->{isa} = '._detect_oo($caller).'::Util::TypeConstraints::find_or_parse_type_constraint($_->{isa});';
+		push @code, '  if (exists($_{isa}) && !ref($_{isa})) {';
+		push @code, '    $_{isa} = '._detect_oo($caller).'::Util::TypeConstraints::find_or_parse_type_constraint($_{isa});';
 		push @code, '  }';
 	}
 	
@@ -72,63 +72,63 @@ sub _compile_munger_code
 	{
 		if (delete $features{"is_$is"})
 		{
-			push @code, '  $_->{is} ||= "'.$is.'";';
+			push @code, '  $_{is} ||= "'.$is.'";';
 		}
 	}
 	
 	unless (_detect_oo($caller) eq "Moo")
 	{
-		push @code, '  if ($_->{is} eq q(lazy)) {';
-		push @code, '    $_->{is}      = "ro";';
-		push @code, '    $_->{lazy}    = 1 unless exists($_->{lazy});';
-		push @code, '    $_->{builder} = "_build_$." if $_->{lazy} && !exists($_->{builder}) && !exists($_->{default});';
+		push @code, '  if ($_{is} eq q(lazy)) {';
+		push @code, '    $_{is}      = "ro";';
+		push @code, '    $_{lazy}    = 1 unless exists($_{lazy});';
+		push @code, '    $_{builder} = "_build_$_" if $_{lazy} && !exists($_{builder}) && !exists($_{default});';
 		push @code, '  }';
 		
-		push @code, '  if ($_->{is} eq q(rwp)) {';
-		push @code, '    $_->{is}     = "ro";';
-		push @code, '    $_->{writer} = "_set_$." unless exists($_->{writer});';
+		push @code, '  if ($_{is} eq q(rwp)) {';
+		push @code, '    $_{is}     = "ro";';
+		push @code, '    $_{writer} = "_set_$_" unless exists($_{writer});';
 		push @code, '  }';
 	}
 	
 	if (delete $features{"eq_1"})
 	{
 		push @code, '  my ($pfx, $name) = ($. =~ /^(_*)(.+)$/);';
-		push @code, '  $_->{builder}   = "_build_$." if exists($_->{builder}) && $_->{builder} eq q(1);';
-		push @code, '  $_->{clearer}   = "${pfx}clear_${name}" if exists($_->{clearer}) && $_->{clearer} eq q(1);';
-		push @code, '  $_->{predicate} = "${pfx}has_${name}" if exists($_->{predicate}) && $_->{predicate} eq q(1);';
-		push @code, '  if (exists($_->{trigger}) && $_->{trigger} eq q(1)) {';
-		push @code, '    my $method = "_trigger_$.";';
-		push @code, '    $_->{trigger} = sub { shift->$method(@_) };';
+		push @code, '  $_{builder}   = "_build_$_" if exists($_{builder}) && $_{builder} eq q(1);';
+		push @code, '  $_{clearer}   = "${pfx}clear_${name}" if exists($_{clearer}) && $_{clearer} eq q(1);';
+		push @code, '  $_{predicate} = "${pfx}has_${name}" if exists($_{predicate}) && $_{predicate} eq q(1);';
+		push @code, '  if (exists($_{trigger}) && $_{trigger} eq q(1)) {';
+		push @code, '    my $method = "_trigger_$_";';
+		push @code, '    $_{trigger} = sub { shift->$method(@_) };';
 		push @code, '  }';
 	}
 	
 	if (delete $features{"always_coerce"})
 	{
-		push @code, '  if (exists($_->{isa}) and !exists($_->{coerce}) and Scalar::Util::blessed($_->{isa}) and $_->{isa}->can("has_coercion") and $_->{isa}->has_coercion) {';
-		push @code, '    $_->{coerce} = $_->{isa}->coercion;';
+		push @code, '  if (exists($_{isa}) and !exists($_{coerce}) and Scalar::Util::blessed($_{isa}) and $_{isa}->can("has_coercion") and $_{isa}->has_coercion) {';
+		push @code, '    $_{coerce} = $_{isa}->coercion;';
 		push @code, '  }';
 	}
 	
 	if (_detect_oo($caller) eq "Moo")
 	{
-		push @code, '  if (defined($_->{coerce}) and !ref($_->{coerce}) and $_->{coerce} eq "1") {';
-		push @code, '    Scalar::Util::blessed($_->{isa}) && $_->{isa}->isa("Type::Tiny")';
+		push @code, '  if (defined($_{coerce}) and !ref($_{coerce}) and $_{coerce} eq "1") {';
+		push @code, '    Scalar::Util::blessed($_{isa}) && $_{isa}->isa("Type::Tiny")';
 		push @code, '      or Carp::croak("coerce => 1, but not isa => Type::Tiny");';
-		push @code, '    $_->{coerce} = $_->{isa}->coercion;';
+		push @code, '    $_{coerce} = $_{isa}->coercion;';
 		push @code, '  }';
-		push @code, '  elsif (exists($_->{coerce}) and not $_->{coerce}) {';
-		push @code, '    delete($_->{coerce});';
+		push @code, '  elsif (exists($_{coerce}) and not $_{coerce}) {';
+		push @code, '    delete($_{coerce});';
 		push @code, '  }';
 	}
 	
 	if (delete $features{"no_isa"})
 	{
-		push @code, '  delete($_->{isa}) if !exists($_->{coerce});';
+		push @code, '  delete($_{isa}) if !exists($_{coerce});';
 	}
 	
 	if (delete $features{"simple_isa"})
 	{
-		push @code, '  $_->{isa} = "'.$class.'"->_simplify_isa($_->{isa}) if Scalar::Util::blessed($_->{isa}) && !$_->{coerce};';
+		push @code, '  $_{isa} = "'.$class.'"->_simplify_isa($_{isa}) if Scalar::Util::blessed($_{isa}) && !$_{coerce};';
 	}
 	
 	push @code, sprintf('  $subs[%d]->(@_);', $_) for 0..$#subs;
@@ -188,18 +188,18 @@ sub _make_has
 			my @attrs = @$attr;
 			for my $attr (@attrs)
 			{
-				local $_ = \%spec;
-				local $. = $attr;
-				$coderef->($attr, %spec);
-				return $orig->($attr, %$_);
+				local %_ = %spec;
+				local $_ = $attr;
+				$coderef->($attr, %_);
+				return $orig->($attr, %_);
 			}
 		}
 		else
 		{
-			local $_ = \%spec;
-			local $. = $attr;
-			$coderef->($attr, %spec);
-			return $orig->($attr, %$_);
+			local %_ = %spec;
+			local $_ = $attr;
+			$coderef->($attr, %_);
+			return $orig->($attr, %_);
 		}
 	};
 }
@@ -219,10 +219,10 @@ sub _make_has_mouse
 		}
 		else
 		{
-			local $_ = \%spec;
-			local $. = $attr;
-			$coderef->($attr, %spec);
-			@_ = ($attr, %$_);
+			local %_ = %spec;
+			local $_ = $attr;
+			$coderef->($attr, %_);
+			@_ = ($attr, %_);
 			goto $orig;
 		}
 	};
@@ -305,12 +305,12 @@ additional mungers using coderefs:
 
    use MooseX::MungeHas "no_isa", sub {
       # Make constructor ignore private attributes
-      $_->{init_arg} = undef if $. =~ /^_/;
+      $_{init_arg} = undef if /^_/;
    };
 
 Within coderefs, the name of the attribute being processed is available
-in the C<< $. >> variable, and the specification hash is referenced via
-C<< $_ >>.
+in the C<< $_ >> variable, and the specification hash is available as
+C<< %_ >>.
 
 You may provide multiple coderefs. Mungers provided as coderefs are
 executed I<after> named ones, but are otherwise executed in the order

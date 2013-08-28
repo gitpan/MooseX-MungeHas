@@ -10,7 +10,7 @@ build_requires:
 configure_requires:
   ExtUtils::MakeMaker: 6.17
 dynamic_config: 0
-generated_by: 'Dist::Inkt::Profile::TOBYINK version 0.006, CPAN::Meta::Converter version 2.120921'
+generated_by: 'Dist::Inkt::Profile::TOBYINK version 0.007, CPAN::Meta::Converter version 2.120921'
 keywords: []
 license: unknown
 meta-spec:
@@ -27,7 +27,7 @@ no_index:
 provides:
   MooseX::MungeHas:
     file: lib/MooseX/MungeHas.pm
-    version: 0.002
+    version: 0.003
 requires:
   Eval::TypeTiny: 0.006
 resources:
@@ -36,5 +36,5 @@ resources:
   homepage: https://metacpan.org/release/MooseX-MungeHas
   license: http://dev.perl.org/licenses/
   repository: https://github.com/tobyink/p5-moosex-mungehas
-version: 0.002
+version: 0.003
 x_provides_scripts: {}

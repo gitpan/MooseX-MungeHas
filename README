@@ -53,11 +53,11 @@ DESCRIPTION
 
        use MooseX::MungeHas "no_isa", sub {
           # Make constructor ignore private attributes
-          $_->{init_arg} = undef if $. =~ /^_/;
+          $_{init_arg} = undef if /^_/;
        };
 
     Within coderefs, the name of the attribute being processed is available in
-    the $. variable, and the specification hash is referenced via $_.
+    the $_ variable, and the specification hash is available as %_.
 
     You may provide multiple coderefs. Mungers provided as coderefs are
     executed *after* named ones, but are otherwise executed in the order

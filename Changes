@@ -6,6 +6,11 @@ Home page:    <https://metacpan.org/release/MooseX-MungeHas>
 Bug tracker:  <http://rt.cpan.org/Dist/Display.html?Queue=MooseX-MungeHas>
 Maintainer:   Toby Inkster (TOBYINK) <tobyink@cpan.org>
 
+0.003	2013-08-28
+
+ - (Change) Use the `$_` variable for the attribute name instead of `$.`.
+ - (Change) Use the `%_` hash for the attribute spec instead of `%$_`.
+
 0.002	2013-08-20
 
  - (Bugfix) Fix syntax error compiling the eq_1 munger.

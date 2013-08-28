@@ -15,10 +15,10 @@ License: GPL-1.0+ or Artistic-1.0
 
 Files: Changes
  META.json
- META.ttl
  META.yml
  Makefile.PL
  dist.ini
+ doap.ttl
 Copyright: Copyright 2013 Toby Inkster.
 License: GPL-1.0+ or Artistic-1.0
 
