@@ -27,7 +27,7 @@ no_index:
 provides:
   MooseX::MungeHas:
     file: lib/MooseX/MungeHas.pm
-    version: 0.003
+    version: 0.004
 requires:
   Eval::TypeTiny: 0.006
 resources:
@@ -36,5 +36,7 @@ resources:
   homepage: https://metacpan.org/release/MooseX-MungeHas
   license: http://dev.perl.org/licenses/
   repository: https://github.com/tobyink/p5-moosex-mungehas
-version: 0.003
+version: 0.004
+x_contributors:
+  - 'Andrew Rodland (ARODLAND) <arodland@cpan.org>'
 x_provides_scripts: {}
