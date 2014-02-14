@@ -8,7 +8,7 @@ Test that MooseX::MungeHas features work with Mouse.
 
 =head1 DEPENDENCIES
 
-Test requires Mouse 1.00 or is skipped.
+Test requires Mouse 1.00 and Types::Standard 0.006 or is skipped.
 
 =head1 AUTHOR
 
@@ -26,6 +26,7 @@ the same terms as the Perl 5 programming language system itself.
 use strict;
 use warnings;
 use Test::Requires { "Mouse" => "1.00" };
+use Test::Requires { "Types::Standard" => "0.006" };
 use Test::More;
 
 use Types::Standard -types;

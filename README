@@ -17,26 +17,43 @@ DESCRIPTION
     wrapper for `has` that munges the attribute specification hash before
     passing it on to the original `has` function.
 
-    When you `use MooseX::MungeHas` you must provide a list of mungers you
-    want it to apply. The following are currently pre-defined:
+    The following munges are always applied (simply because I can see no
+    sensible reason why you would not want them to be).
+
+    *   Implement `is => "rwp"` and `is => "lazy"` in Moose and Mouse.
+
+    *   Implement `builder => 1`, `clearer => 1`, `predicate => 1`, and
+        `trigger => 1` in Moose and Mouse.
+
+    *   Allow Moo to support `coerce => 0|1` for Type::Tiny type constraints.
+        (Moo normally expects a coderef for the coercion.)
+
+    When you import this module (i.e. `use MooseX::MungeHas`) you can provide
+    a list of additional mungers you want it to apply. These may be provided
+    as coderefs, though for a few common, useful sets of behaviour, there are
+    pre-defined shortcut strings.
+
+       # "no_isa" is a pre-defined shortcut;
+       # the other munger is a coderef.
+       #
+       use MooseX::MungeHas "no_isa", sub {
+          # Make constructor ignore private attributes
+          $_{init_arg} = undef if /^_/;
+       };
+
+    Within coderefs, the name of the attribute being processed is available in
+    the $_ variable, and the specification hash is available as %_.
+
+    You may provide multiple coderefs.
+
+    The following are the pre-defined shortcuts:
 
     `is_ro`, `is_rw`, `is_rwp`, `is_lazy`
         These mungers supply defaults for the `is` option.
 
-        Although only Moo supports `is => "rwp"` and `is => "lazy"`,
-        MooseX::MungeHas supplies an implementation of both for Moose or
-        Mouse.
-
     `always_coerce`
         Automatically provides `coerce => 1` if the type constraint provides
         coercions. (Unless you've explicitly specified `coerce => 0`.)
-
-        Although Moo expects coerce to be a coderef, MooseX::MungeHas supplies
-        an implementation of `coerce => 0|1` for Type::Tiny type constraints.
-
-    `eq_1`
-        Makes `builder => 1`, `clearer => 1`, `predicate => 1`, and `trigger
-        => 1` do what you mean.
 
     `no_isa`
         Switches off `isa` checks for attributes, unless they coerce.
@@ -48,20 +65,8 @@ DESCRIPTION
 
         Only works if you're using Type::Tiny constraints.
 
-    If these predefined mungers don't float your boat, then you can provide
-    additional mungers using coderefs:
-
-       use MooseX::MungeHas "no_isa", sub {
-          # Make constructor ignore private attributes
-          $_{init_arg} = undef if /^_/;
-       };
-
-    Within coderefs, the name of the attribute being processed is available in
-    the $_ variable, and the specification hash is available as %_.
-
-    You may provide multiple coderefs. Mungers provided as coderefs are
-    executed *after* named ones, but are otherwise executed in the order
-    specified.
+    Mungers provided as coderefs are executed *after* predefined ones, but are
+    otherwise executed in the order specified.
 
 BUGS
     Please report any bugs to
@@ -78,7 +83,7 @@ AUTHOR
     Toby Inkster <tobyink@cpan.org>.
 
 COPYRIGHT AND LICENCE
-    This software is copyright (c) 2013 by Toby Inkster.
+    This software is copyright (c) 2013-2014 by Toby Inkster.
 
     This is free software; you can redistribute it and/or modify it under the
     same terms as the Perl 5 programming language system itself.

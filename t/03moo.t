@@ -8,7 +8,7 @@ Test that MooseX::MungeHas features work with Moo.
 
 =head1 DEPENDENCIES
 
-Test requires Moo 1.000000 or is skipped.
+Test requires Moo 1.000000 and Types::Standard 0.006 or is skipped.
 
 =head1 AUTHOR
 
@@ -26,6 +26,7 @@ the same terms as the Perl 5 programming language system itself.
 use strict;
 use warnings;
 use Test::Requires { "Moo" => "1.000000" };
+use Test::Requires { "Types::Standard" => "0.006" };
 use Test::More;
 use Test::Fatal;
 

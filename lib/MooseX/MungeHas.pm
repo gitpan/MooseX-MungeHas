@@ -6,12 +6,22 @@ use warnings;
 
 BEGIN {
 	$MooseX::MungeHas::AUTHORITY = 'cpan:TOBYINK';
-	$MooseX::MungeHas::VERSION   = '0.004';
-}
+	$MooseX::MungeHas::VERSION   = '0.005';
+};
 
 use Carp qw(croak);
-use Eval::TypeTiny qw(eval_closure);
 use Scalar::Util qw();
+
+BEGIN {
+	for my $backend (qw/ Eval::TypeTiny Eval::Closure /)
+	{
+		last if eval(
+			"require $backend; *eval_closure = \\&$backend\::eval_closure;"
+		);
+	}
+	exists(&eval_closure)
+		or croak "Could not load Eval::TypeTiny";
+};
 
 sub import
 {
@@ -45,11 +55,7 @@ sub _detect_oo
 sub _make_munger
 {
 	my $class = shift;
-	my ($caller, @features) = @_;
-	
-	@features or croak "Munge 'has' how exactly?? Expected list";
-	
-	return $class->_compile_munger_code($caller, @features);
+	return $class->_compile_munger_code(@_);
 }
 
 sub _compile_munger_code
@@ -64,7 +70,7 @@ sub _compile_munger_code
 	if (_detect_oo($caller) =~ /^Mo[ou]se$/)
 	{
 		push @code, '  if (exists($_{isa}) && !ref($_{isa})) {';
-		push @code, '    $_{isa} = '._detect_oo($caller).'::Util::TypeConstraints::find_or_parse_type_constraint($_{isa});';
+		push @code, '    $_{isa} = '._detect_oo($caller).'::Util::TypeConstraints::find_or_create_isa_type_constraint($_{isa});';
 		push @code, '  }';
 	}
 	
@@ -88,19 +94,24 @@ sub _compile_munger_code
 		push @code, '    $_{is}     = "ro";';
 		push @code, '    $_{writer} = "_set_$_" unless exists($_{writer});';
 		push @code, '  }';
-	}
-	
-	if (delete $features{"eq_1"})
-	{
-		push @code, '  my ($pfx, $name) = ($_ =~ /^(_*)(.+)$/);';
-		push @code, '  $_{builder}   = "_build_$_" if exists($_{builder}) && $_{builder} eq q(1);';
-		push @code, '  $_{clearer}   = "${pfx}clear_${name}" if exists($_{clearer}) && $_{clearer} eq q(1);';
-		push @code, '  $_{predicate} = "${pfx}has_${name}" if exists($_{predicate}) && $_{predicate} eq q(1);';
-		push @code, '  if (exists($_{trigger}) && $_{trigger} eq q(1)) {';
-		push @code, '    my $method = "_trigger_$_";';
-		push @code, '    $_{trigger} = sub { shift->$method(@_) };';
+		
+		push @code, '  if (ref($_{isa}) eq q(CODE)) {';
+		push @code, '    require Type::Tiny;';
+		push @code, '    my $code = $_{isa};';
+		push @code, '    my $safe = sub { !!eval { $code->($_); 1 } };';
+		push @code, '    $_{isa}  = "Type::Tiny"->new(constraint => $safe);';
 		push @code, '  }';
 	}
+	
+	delete $features{"eq_1"};
+	push @code, '  my ($pfx, $name) = ($_ =~ /^(_*)(.+)$/);';
+	push @code, '  $_{builder}   = "_build_$_" if exists($_{builder}) && $_{builder} eq q(1);';
+	push @code, '  $_{clearer}   = "${pfx}clear_${name}" if exists($_{clearer}) && $_{clearer} eq q(1);';
+	push @code, '  $_{predicate} = "${pfx}has_${name}" if exists($_{predicate}) && $_{predicate} eq q(1);';
+	push @code, '  if (exists($_{trigger}) && $_{trigger} eq q(1)) {';
+	push @code, '    my $method = "_trigger_$_";';
+	push @code, '    $_{trigger} = sub { shift->$method(@_) };';
+	push @code, '  }';
 	
 	if (delete $features{"always_coerce"})
 	{
@@ -238,6 +249,12 @@ __END__
 
 =for stopwords metathingies munges mungers
 
+=begin private
+
+=item eval_closure
+
+=end private
+
 =head1 NAME
 
 MooseX::MungeHas - munge your "has" (works with Moo, Moose and Mouse)
@@ -260,8 +277,48 @@ it doesn't attempt to do anything smart with metathingies; it simply
 installs a wrapper for C<< has >> that munges the attribute specification
 hash before passing it on to the original C<< has >> function.
 
-When you C<< use MooseX::MungeHas >> you must provide a list of mungers
-you want it to apply. The following are currently pre-defined:
+The following munges are always applied (simply because I can see no
+sensible reason why you would not want them to be).
+
+=over
+
+=item *
+
+Implement C<< is => "rwp" >> and C<< is => "lazy" >> in L<Moose> and
+L<Mouse>.
+
+=item *
+
+Implement C<< builder => 1 >>, C<< clearer => 1 >>, C<< predicate => 1 >>,
+and C<< trigger => 1 >> in L<Moose> and L<Mouse>.
+
+=item *
+
+Allow L<Moo> to support C<< coerce => 0|1 >> for L<Type::Tiny> type
+constraints. (Moo normally expects a coderef for the coercion.)
+
+=back
+
+When you import this module (i.e. C<< use MooseX::MungeHas >>) you can
+provide a list of additional mungers you want it to apply. These may be
+provided as coderefs, though for a few common, useful sets of behaviour,
+there are pre-defined shortcut strings.
+
+   # "no_isa" is a pre-defined shortcut;
+   # the other munger is a coderef.
+   #
+   use MooseX::MungeHas "no_isa", sub {
+      # Make constructor ignore private attributes
+      $_{init_arg} = undef if /^_/;
+   };
+
+Within coderefs, the name of the attribute being processed is available
+in the C<< $_ >> variable, and the specification hash is available as
+C<< %_ >>.
+
+You may provide multiple coderefs.
+
+The following are the pre-defined shortcuts:
 
 =over
 
@@ -269,22 +326,10 @@ you want it to apply. The following are currently pre-defined:
 
 These mungers supply defaults for the C<< is >> option.
 
-Although only L<Moo> supports C<< is => "rwp" >> and C<< is => "lazy" >>,
-MooseX::MungeHas supplies an implementation of both for L<Moose> or
-L<Mouse>.
-
 =item C<< always_coerce >>
 
 Automatically provides C<< coerce => 1 >> if the type constraint provides
 coercions. (Unless you've explicitly specified C<< coerce => 0 >>.)
-
-Although L<Moo> expects coerce to be a coderef, MooseX::MungeHas supplies
-an implementation of C<< coerce => 0|1 >> for L<Type::Tiny> type constraints.
-
-=item C<< eq_1 >>
-
-Makes C<< builder => 1 >>, C<< clearer => 1 >>, C<< predicate => 1 >>,
-and C<< trigger => 1 >> do what you mean.
 
 =item C<< no_isa >>
 
@@ -300,21 +345,8 @@ Only works if you're using L<Type::Tiny> constraints.
 
 =back
 
-If these predefined mungers don't float your boat, then you can provide
-additional mungers using coderefs:
-
-   use MooseX::MungeHas "no_isa", sub {
-      # Make constructor ignore private attributes
-      $_{init_arg} = undef if /^_/;
-   };
-
-Within coderefs, the name of the attribute being processed is available
-in the C<< $_ >> variable, and the specification hash is available as
-C<< %_ >>.
-
-You may provide multiple coderefs. Mungers provided as coderefs are
-executed I<after> named ones, but are otherwise executed in the order
-specified.
+Mungers provided as coderefs are executed I<after> predefined ones, but
+are otherwise executed in the order specified.
 
 =head1 BUGS
 
@@ -335,7 +367,7 @@ Toby Inkster E<lt>tobyink@cpan.orgE<gt>.
 
 =head1 COPYRIGHT AND LICENCE
 
-This software is copyright (c) 2013 by Toby Inkster.
+This software is copyright (c) 2013-2014 by Toby Inkster.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
