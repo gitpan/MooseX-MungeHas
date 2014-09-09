@@ -6,7 +6,7 @@ use warnings;
 
 BEGIN {
 	$MooseX::MungeHas::AUTHORITY = 'cpan:TOBYINK';
-	$MooseX::MungeHas::VERSION   = '0.006';
+	$MooseX::MungeHas::VERSION   = '0.007';
 };
 
 use Carp qw(croak);
@@ -32,24 +32,58 @@ sub import
 	
 	my $orig = \&{"$caller\::has"}
 		or croak "$caller does not have a 'has' function to munge";
-
-	no warnings qw(redefine prototype);
-	*{"$caller\::has"} = $class->_make_has(
-		$caller,
-		$class->_make_munger($caller, @_),
-		$orig,
-	);
+	
+	my %export = (@_ == 1 and ref($_[0]) eq "HASH")
+		? %{ $_[0] }
+		: ( has => [@_] );
+	
+	for my $f (sort keys %export)
+	{
+		no warnings qw(redefine prototype);
+		
+		*{"$caller\::$f"} = $class->_make_has(
+			$caller,
+			$class->_make_munger($caller, @{$export{$f}}),
+			$orig,
+		);
+	}
 }
 
-sub _detect_oo
 {
-	my $package = $_[0];
-	return "" unless $package->can("meta");
-	return "Moo"   if ref($package->meta) eq "Moo::HandleMoose::FakeMetaClass";
-	return "Mouse" if $package->meta->isa("Mouse::Meta::Module");
-	return "Moose" if $package->meta->isa("Moose::Meta::Class");
-	return "Moose" if $package->meta->isa("Moose::Meta::Role");
-	return "";
+	sub __detect_oo
+	{
+		my $package = $_[0];
+		
+		if ($INC{'Moo.pm'})
+		{
+			return "Moo" if $Moo::MAKERS{$package};
+			return "Moo" if $Moo::Role::INFO{$package};
+		}
+		
+		if ($INC{'Moose.pm'})
+		{
+			require Moose::Util;
+			return "Moose" if Moose::Util::find_meta($package);
+		}
+		
+		if ($INC{'Mouse.pm'})
+		{
+			require Mouse::Util;
+			return "Mouse" if Mouse::Util::find_meta($package);
+		}
+		
+		my $meta;
+		eval { $meta = $package->meta } or return "?";
+		
+		return "Moo"   if ref($meta) eq "Moo::HandleMoose::FakeMetaClass";
+		return "Mouse" if $meta->isa("Mouse::Meta::Module");
+		return "Moose" if $meta->isa("Moose::Meta::Class");
+		return "Moose" if $meta->isa("Moose::Meta::Role");
+		return "?";
+	}
+	
+	my %_cache;
+	sub _detect_oo { $_cache{$_[0]} ||= __detect_oo(@_) };
 }
 
 sub _make_munger
@@ -207,7 +241,7 @@ sub _make_has
 	return sub
 	{
 		my ($attr, %spec) = (
-			(@_ == 2 and ref($_[1]) eq "CODE")                   ? ($_[0], is => "lazy", builder => $_[1]) :
+			(@_ == 2 and ref($_[1]) eq "CODE")                   ? ($_[0], _is => "ro", lazy => 1, builder => $_[1]) :
 			(@_ == 2 and ref($_[1]) eq "HASH")                   ? ($_[0], %{$_[1]}) :
 			(@_ == 2 and blessed($_[1]) and $_[1]->can('check')) ? ($_[0], _is => "ro", isa => $_[1]) :
 			@_
@@ -244,7 +278,7 @@ sub _make_has_mouse
 	return sub
 	{
 		my ($attr, %spec) = (
-			(@_ == 2 and ref($_[1]) eq "CODE")                   ? ($_[0], is => "lazy", builder => $_[1]) :
+			(@_ == 2 and ref($_[1]) eq "CODE")                   ? ($_[0], _is => "ro", lazy => 1, builder => $_[1]) :
 			(@_ == 2 and ref($_[1]) eq "HASH")                   ? ($_[0], %{$_[1]}) :
 			(@_ == 2 and blessed($_[1]) and $_[1]->can('check')) ? ($_[0], _is => "ro", isa => $_[1]) :
 			@_
@@ -403,6 +437,38 @@ Only works if you're using L<Type::Tiny> constraints.
 
 Mungers provided as coderefs are executed I<after> predefined ones, but
 are otherwise executed in the order specified.
+
+=head2 Multiple Wrappers
+
+Since version 0.007, it has been possible to use MooseX::MungeHas to
+export multiple wrappers with different names:
+
+   package Foo;
+   use Moose;
+   use MooseX::MungeHas {
+      has_ro   => [ "is_ro", "always_coerce" ],
+      has_rw   => [ "is_rw", "always_coerce" ],
+   };
+   
+   has_ro "foo" => (required => 1);
+   has_rw "bar";
+
+Note in the example above, MooseX::MungeHas has installed two brand new
+wrapped C<has> functions with different names, but it has left the
+standard C<has> function unmolested.
+
+If you wanted to alter the standard function too, then you could use:
+
+   package Foo;
+   use Moose;
+   use MooseX::MungeHas {
+      has      => [          "always_coerce" ],
+      has_ro   => [ "is_ro", "always_coerce" ],
+      has_rw   => [ "is_rw", "always_coerce" ],
+   };
+   
+   has_ro "foo" => (required => 1);
+   has_rw "bar";
 
 =head1 BUGS
 

@@ -11,19 +11,19 @@ Files: examples/relax-type-constraints.pl
 Copyright: This software is copyright (c) 2013 by Toby Inkster.
 License: GPL-1.0+ or Artistic-1.0
 
-Files: Changes
- META.json
- META.yml
- doap.ttl
-Copyright: Copyright 2014 Toby Inkster.
-License: GPL-1.0+ or Artistic-1.0
-
 Files: CONTRIBUTING
  INSTALL
  LICENSE
  Makefile.PL
 Copyright: Unknown
 License: Unknown
+
+Files: Changes
+ META.json
+ META.yml
+ doap.ttl
+Copyright: Copyright 2014 Toby Inkster.
+License: GPL-1.0+ or Artistic-1.0
 
 Files: COPYRIGHT
  CREDITS
@@ -34,6 +34,10 @@ License: public-domain
 Files: README
  lib/MooseX/MungeHas.pm
 Copyright: This software is copyright (c) 2013-2014 by Toby Inkster.
+License: GPL-1.0+ or Artistic-1.0
+
+Files: t/05multihas.t
+Copyright: This software is copyright (c) 2014 by Toby Inkster.
 License: GPL-1.0+ or Artistic-1.0
 
 Files: dist.ini

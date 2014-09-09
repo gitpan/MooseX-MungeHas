@@ -90,6 +90,37 @@ DESCRIPTION
     Mungers provided as coderefs are executed *after* predefined ones, but are
     otherwise executed in the order specified.
 
+  Multiple Wrappers
+    Since version 0.007, it has been possible to use MooseX::MungeHas to
+    export multiple wrappers with different names:
+
+       package Foo;
+       use Moose;
+       use MooseX::MungeHas {
+          has_ro   => [ "is_ro", "always_coerce" ],
+          has_rw   => [ "is_rw", "always_coerce" ],
+       };
+   
+       has_ro "foo" => (required => 1);
+       has_rw "bar";
+
+    Note in the example above, MooseX::MungeHas has installed two brand new
+    wrapped `has` functions with different names, but it has left the standard
+    `has` function unmolested.
+
+    If you wanted to alter the standard function too, then you could use:
+
+       package Foo;
+       use Moose;
+       use MooseX::MungeHas {
+          has      => [          "always_coerce" ],
+          has_ro   => [ "is_ro", "always_coerce" ],
+          has_rw   => [ "is_rw", "always_coerce" ],
+       };
+   
+       has_ro "foo" => (required => 1);
+       has_rw "bar";
+
 BUGS
     Please report any bugs to
     <http://rt.cpan.org/Dist/Display.html?Queue=MooseX-MungeHas>.
