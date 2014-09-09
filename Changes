@@ -6,6 +6,13 @@ Home page:    <https://metacpan.org/release/MooseX-MungeHas>
 Bug tracker:  <http://rt.cpan.org/Dist/Display.html?Queue=MooseX-MungeHas>
 Maintainer:   Toby Inkster (TOBYINK) <tobyink@cpan.org>
 
+0.006	2014-09-09	tobyink ♥ builder
+
+ - Allow Moo-style `builder=>$coderef` in Moose and Mouse.
+ - Allow Object::Simple-style `has $name=>$coderef` in Moo, Moose, and
+   Mouse.
+ - Allow `has $name=>$type` in Moo, Moose, and Mouse.
+
 0.005	2014-02-14	tobyink ♥ isa
 
  [ Bug Fixes ]

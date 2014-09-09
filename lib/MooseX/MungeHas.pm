@@ -6,11 +6,11 @@ use warnings;
 
 BEGIN {
 	$MooseX::MungeHas::AUTHORITY = 'cpan:TOBYINK';
-	$MooseX::MungeHas::VERSION   = '0.005';
+	$MooseX::MungeHas::VERSION   = '0.006';
 };
 
 use Carp qw(croak);
-use Scalar::Util qw();
+use Scalar::Util qw(blessed);
 
 BEGIN {
 	for my $backend (qw/ Eval::TypeTiny Eval::Closure /)
@@ -74,13 +74,26 @@ sub _compile_munger_code
 		push @code, '  }';
 	}
 	
-	for my $is (qw/ro rw rwp lazy/)
+	for my $is (qw/ro rw rwp lazy bare/)
 	{
 		if (delete $features{"is_$is"})
 		{
 			push @code, '  $_{is} ||= "'.$is.'";';
 		}
 	}
+	
+	push @code, '  if (exists($_{_is})) {';
+	push @code, '    my $_is = delete($_{_is});';
+	push @code, '    $_{is} ||= $_is;';
+	push @code, '  }';
+	
+	push @code, '  if (ref($_{builder}) eq q(CODE)) {';
+	push @code, '    no strict qw(refs);';
+	push @code, '    require Sub::Util;';
+	push @code, '    my $name = "$_{__CALLER__}::_build_$_";';
+	push @code, '    *$name = Sub::Util::set_subname($name, $_{builder});';
+	push @code, '    $_{builder} = $name;';
+	push @code, '  }';
 	
 	unless (_detect_oo($caller) eq "Moo")
 	{
@@ -116,16 +129,16 @@ sub _compile_munger_code
 	if (delete $features{"always_coerce"})
 	{
 		push @code, '  if (exists($_{isa}) and !exists($_{coerce}) and Scalar::Util::blessed($_{isa}) and $_{isa}->can("has_coercion") and $_{isa}->has_coercion) {';
-		push @code, '    $_{coerce} = $_{isa}->coercion;';
+		push @code, '    $_{coerce} = 1;';
 		push @code, '  }';
 	}
 	
 	if (_detect_oo($caller) eq "Moo")
 	{
 		push @code, '  if (defined($_{coerce}) and !ref($_{coerce}) and $_{coerce} eq "1") {';
-		push @code, '    Scalar::Util::blessed($_{isa}) && $_{isa}->isa("Type::Tiny")';
-		push @code, '      or Carp::croak("coerce => 1, but not isa => Type::Tiny");';
-		push @code, '    $_{coerce} = $_{isa}->coercion;';
+		push @code, '    Scalar::Util::blessed($_{isa})';
+		push @code, '      and $_{isa}->isa("Type::Tiny")';
+		push @code, '      and ($_{coerce} = $_{isa}->coercion);';
 		push @code, '  }';
 		push @code, '  elsif (exists($_{coerce}) and not $_{coerce}) {';
 		push @code, '    delete($_{coerce});';
@@ -143,7 +156,8 @@ sub _compile_munger_code
 	}
 	
 	push @code, sprintf('  $subs[%d]->(@_);', $_) for 0..$#subs;
-	
+	#push @code, '  ::diag(::explain($_, \%_));';
+	push @code, '  delete($_{__CALLER__});';
 	push @code, "}";
 	
 	croak sprintf("Did not understand mungers: %s", join(q[, ], sort keys %features))
@@ -192,7 +206,14 @@ sub _make_has
 	
 	return sub
 	{
-		my ($attr, %spec) = @_;
+		my ($attr, %spec) = (
+			(@_ == 2 and ref($_[1]) eq "CODE")                   ? ($_[0], is => "lazy", builder => $_[1]) :
+			(@_ == 2 and ref($_[1]) eq "HASH")                   ? ($_[0], %{$_[1]}) :
+			(@_ == 2 and blessed($_[1]) and $_[1]->can('check')) ? ($_[0], _is => "ro", isa => $_[1]) :
+			@_
+		);
+		
+		$spec{"__CALLER__"} = $caller;
 		
 		if (ref($attr) eq q(ARRAY))
 		{
@@ -222,7 +243,14 @@ sub _make_has_mouse
 	
 	return sub
 	{
-		my ($attr, %spec) = @_;
+		my ($attr, %spec) = (
+			(@_ == 2 and ref($_[1]) eq "CODE")                   ? ($_[0], is => "lazy", builder => $_[1]) :
+			(@_ == 2 and ref($_[1]) eq "HASH")                   ? ($_[0], %{$_[1]}) :
+			(@_ == 2 and blessed($_[1]) and $_[1]->can('check')) ? ($_[0], _is => "ro", isa => $_[1]) :
+			@_
+		);
+		
+		$spec{"__CALLER__"} = $caller;
 		
 		if (ref($attr) eq q(ARRAY))
 		{
@@ -287,15 +315,43 @@ sensible reason why you would not want them to be).
 Implement C<< is => "rwp" >> and C<< is => "lazy" >> in L<Moose> and
 L<Mouse>.
 
+(These already work in L<Moo>.)
+
 =item *
 
 Implement C<< builder => 1 >>, C<< clearer => 1 >>, C<< predicate => 1 >>,
 and C<< trigger => 1 >> in L<Moose> and L<Mouse>.
 
+(These already work in L<Moo>.)
+
+=item *
+
+Implement C<< builder => sub { ... } >> in L<Moose> and L<Mouse>.
+
+(This already works in L<Moo>.)
+
 =item *
 
 Allow L<Moo> to support C<< coerce => 0|1 >> for L<Type::Tiny> type
 constraints. (Moo normally expects a coderef for the coercion.)
+
+(These already work in L<Moose> and L<Mouse>, and has actually been
+added to L<Moo> as of version 1.006000.)
+
+=item *
+
+Makes C<< has $name => sub { ... } >> into a shortcut for:
+
+   has $name => (is => "lazy", builder => sub { ... });
+
+=item *
+
+Makes C<< has $name => $type_constraint >> into a shortcut for:
+
+   has $name => (isa => $type_constraint);
+
+(Assuming that C<< $type_constraint >> is a blessed type constraint
+object a la L<Type::Tiny>, L<MooseX::Types>, etc.)
 
 =back
 

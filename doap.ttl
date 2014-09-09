@@ -15,12 +15,13 @@
 	a                    doap:Project;
 	dc:contributor       <http://purl.org/NET/cpan-uri/person/tobyink>;
 	doap-deps:develop-recommendation [ doap-deps:on "Dist::Inkt"^^doap-deps:CpanId ];
+	doap-deps:runtime-requirement [ doap-deps:on "perl 5.008000"^^doap-deps:CpanId ], [ doap-deps:on "Sub::Util 1.40"^^doap-deps:CpanId ];
 	doap-deps:runtime-suggestion [ doap-deps:on "Moo 1.002000"^^doap-deps:CpanId ], [ doap-deps:on "Moose 2.0000"^^doap-deps:CpanId ], [ doap-deps:on "Mouse 1.00"^^doap-deps:CpanId ], [
 		doap-deps:on "Class::Tiny::Antlers"^^doap-deps:CpanId;
 	];
-	doap-deps:test-recommendation [
+	doap-deps:test-recommendation [ doap-deps:on "Moose 2.0000"^^doap-deps:CpanId ], [ doap-deps:on "Moo 1.002000"^^doap-deps:CpanId ], [
 		doap-deps:on "Types::Standard 0.006"^^doap-deps:CpanId;
-	], [ doap-deps:on "Moose 2.0000"^^doap-deps:CpanId ], [ doap-deps:on "Moo 1.002000"^^doap-deps:CpanId ];
+	];
 	doap-deps:test-requirement [ doap-deps:on "Test::More 0.96"^^doap-deps:CpanId ], [
 		doap-deps:on "Test::Requires 0.06"^^doap-deps:CpanId;
 	], [ doap-deps:on "Test::Fatal"^^doap-deps:CpanId ];
@@ -34,7 +35,7 @@
 	doap:maintainer      <http://purl.org/NET/cpan-uri/person/tobyink>;
 	doap:name            "MooseX-MungeHas";
 	doap:programming-language "Perl";
-	doap:release         <http://purl.org/NET/cpan-uri/dist/MooseX-MungeHas/v_0-000_01>, <http://purl.org/NET/cpan-uri/dist/MooseX-MungeHas/v_0-000_02>, <http://purl.org/NET/cpan-uri/dist/MooseX-MungeHas/v_0-000_03>, <http://purl.org/NET/cpan-uri/dist/MooseX-MungeHas/v_0-000_04>, <http://purl.org/NET/cpan-uri/dist/MooseX-MungeHas/v_0-001>, <http://purl.org/NET/cpan-uri/dist/MooseX-MungeHas/v_0-002>, <http://purl.org/NET/cpan-uri/dist/MooseX-MungeHas/v_0-003>, <http://purl.org/NET/cpan-uri/dist/MooseX-MungeHas/v_0-004>, <http://purl.org/NET/cpan-uri/dist/MooseX-MungeHas/v_0-005>;
+	doap:release         <http://purl.org/NET/cpan-uri/dist/MooseX-MungeHas/v_0-000_01>, <http://purl.org/NET/cpan-uri/dist/MooseX-MungeHas/v_0-000_02>, <http://purl.org/NET/cpan-uri/dist/MooseX-MungeHas/v_0-000_03>, <http://purl.org/NET/cpan-uri/dist/MooseX-MungeHas/v_0-000_04>, <http://purl.org/NET/cpan-uri/dist/MooseX-MungeHas/v_0-001>, <http://purl.org/NET/cpan-uri/dist/MooseX-MungeHas/v_0-002>, <http://purl.org/NET/cpan-uri/dist/MooseX-MungeHas/v_0-003>, <http://purl.org/NET/cpan-uri/dist/MooseX-MungeHas/v_0-004>, <http://purl.org/NET/cpan-uri/dist/MooseX-MungeHas/v_0-005>, <http://purl.org/NET/cpan-uri/dist/MooseX-MungeHas/v_0-006>;
 	doap:repository      [
 		a doap:GitRepository;
 		doap:browse <https://github.com/tobyink/p5-moosex-mungehas>;
@@ -196,6 +197,27 @@
 	doap-changeset:released-by <http://purl.org/NET/cpan-uri/person/tobyink>;
 	doap:file-release    <http://backpan.cpan.org/authors/id/T/TO/TOBYINK/MooseX-MungeHas-0.005.tar.gz>;
 	doap:revision        "0.005"^^xsd:string.
+
+<http://purl.org/NET/cpan-uri/dist/MooseX-MungeHas/v_0-006>
+	a                    doap:Version;
+	rdfs:label           "tobyink ♥ builder";
+	dc:identifier        "MooseX-MungeHas-0.006"^^xsd:string;
+	dc:issued            "2014-09-09"^^xsd:date;
+	doap-changeset:changeset [
+		doap-changeset:item [
+			a doap-changeset:Change;
+			rdfs:label "Allow Object::Simple-style `has $name=>$coderef` in Moo, Moose, and Mouse.";
+		], [
+			a doap-changeset:Change;
+			rdfs:label "Allow `has $name=>$type` in Moo, Moose, and Mouse.";
+		], [
+			a doap-changeset:Change;
+			rdfs:label "Allow Moo-style `builder=>$coderef` in Moose and Mouse.";
+		];
+	];
+	doap-changeset:released-by <http://purl.org/NET/cpan-uri/person/tobyink>;
+	doap:file-release    <http://backpan.cpan.org/authors/id/T/TO/TOBYINK/MooseX-MungeHas-0.006.tar.gz>;
+	doap:revision        "0.006"^^xsd:string.
 
 <http://purl.org/NET/cpan-uri/person/arodland>
 	a                    foaf:Person;

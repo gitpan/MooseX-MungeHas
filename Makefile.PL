@@ -7,7 +7,7 @@ my $meta = {
   "abstract"       => "munge your \"has\" (works with Moo, Moose and Mouse)",
   "author"         => ["Toby Inkster (TOBYINK) <tobyink\@cpan.org>"],
   "dynamic_config" => 1,
-  "generated_by"   => "Dist::Inkt::Profile::TOBYINK version 0.014, CPAN::Meta::Converter version 2.120921",
+  "generated_by"   => "Dist::Inkt::Profile::TOBYINK version 0.016, CPAN::Meta::Converter version 2.140640",
   "keywords"       => [],
   "license"        => ["perl_5"],
   "meta-spec"      => {
@@ -20,12 +20,13 @@ my $meta = {
                         configure => { requires => { "ExtUtils::MakeMaker" => 6.17 } },
                         develop   => { recommends => { "Dist::Inkt" => 0 } },
                         runtime   => {
+                                       requires => { "perl" => "5.008000", "Sub::Util" => "1.40" },
                                        suggests => {
-                                         "Class::Tiny::Antlers" => 0,
-                                         "Moo" => "1.002000",
-                                         "Moose" => "2.0000",
-                                         "Mouse" => "1.00",
-                                       },
+                                                     "Class::Tiny::Antlers" => 0,
+                                                     "Moo" => "1.002000",
+                                                     "Moose" => "2.0000",
+                                                     "Mouse" => "1.00",
+                                                   },
                                      },
                         test      => {
                                        recommends => { "Moo" => "1.002000", "Moose" => "2.0000", "Types::Standard" => 0.006 },
@@ -34,7 +35,7 @@ my $meta = {
                                      },
                       },
   "provides"       => {
-                        "MooseX::MungeHas" => { file => "lib/MooseX/MungeHas.pm", version => 0.005 },
+                        "MooseX::MungeHas" => { file => "lib/MooseX/MungeHas.pm", version => 0.006 },
                       },
   "release_status" => "stable",
   "resources"      => {
@@ -45,11 +46,12 @@ my $meta = {
                         license      => ["http://dev.perl.org/licenses/"],
                         repository   => {
                                           type => "git",
+                                          url  => "git://github.com/tobyink/p5-moosex-mungehas.git",
                                           web  => "https://github.com/tobyink/p5-moosex-mungehas",
                                         },
                         X_identifier => "http://purl.org/NET/cpan-uri/dist/MooseX-MungeHas/project",
                       },
-  "version"        => 0.005,
+  "version"        => 0.006,
   "x_contributors" => ["Andrew Rodland (ARODLAND) <arodland\@cpan.org>"],
 };
 

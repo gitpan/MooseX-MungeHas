@@ -22,11 +22,33 @@ DESCRIPTION
 
     *   Implement `is => "rwp"` and `is => "lazy"` in Moose and Mouse.
 
+        (These already work in Moo.)
+
     *   Implement `builder => 1`, `clearer => 1`, `predicate => 1`, and
         `trigger => 1` in Moose and Mouse.
 
+        (These already work in Moo.)
+
+    *   Implement `builder => sub { ... }` in Moose and Mouse.
+
+        (This already works in Moo.)
+
     *   Allow Moo to support `coerce => 0|1` for Type::Tiny type constraints.
         (Moo normally expects a coderef for the coercion.)
+
+        (These already work in Moose and Mouse, and has actually been added to
+        Moo as of version 1.006000.)
+
+    *   Makes `has $name => sub { ... }` into a shortcut for:
+
+           has $name => (is => "lazy", builder => sub { ... });
+
+    *   Makes `has $name => $type_constraint` into a shortcut for:
+
+           has $name => (isa => $type_constraint);
+
+        (Assuming that $type_constraint is a blessed type constraint object a
+        la Type::Tiny, MooseX::Types, etc.)
 
     When you import this module (i.e. `use MooseX::MungeHas`) you can provide
     a list of additional mungers you want it to apply. These may be provided
